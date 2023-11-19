@@ -1,6 +1,6 @@
 (function () {
     if (window.location.pathname === "/promo") {
-        console.log("SUP:", "is promo page, stop manager");
+        log("is promo page, stop manager");
         return;
     }
     const timeOffsetAfterPromoStreamEndInMinutes: number = 3;
@@ -9,24 +9,24 @@
 
 
     if (!hasRedirected) {
-        console.log("SUP:", "Init App");
+        log("Init App");
         redirectToIndex();
     } else if (isStreamPage) {
-        console.log("SUP:", "is stream page");
+        log("is stream page");
         checkThisStreamCurrentlyPromo();
     } else {
-        console.log("SUP:", "is index page, looking for promo link");
+        log("is index page, looking for promo link");
         const promoLink: HTMLLinkElement | null = document.querySelector("#promo_info a");
         if (promoLink && promoLink?.href) {
             const href: string = promoLink.href;
-            console.log("SUP:", "promoLink found: ", href);
+            log("promoLink found: ", href);
             if (!window.location.href.startsWith(href)) {
-                console.log("SUP:", "redirecting to promo stream: ", href);
+                log("redirecting to promo stream: ", href);
                 sessionStorage.setItem("redirected", "true");
                 window.location.href = promoLink.href;
             }
         } else {
-            console.log("SUP:", "promo link is not found");
+            log("promo link is not found");
             startWaitingNextTimePoint();
         }
     }
@@ -40,10 +40,10 @@
         nextTimePoint.setMilliseconds(0);
         const delay: number = nextTimePoint.getTime() - now.getTime();
 
-        console.log("SUP:", "start waiting next time point timeout, next time point is", nextTimePoint.toLocaleTimeString(), "time left:", (delay / 1000 / 60).toFixed(1), "minutes");
+        log("start waiting next time point timeout, next time point is", nextTimePoint.toLocaleTimeString(), "time left:", (delay / 1000 / 60).toFixed(1), "minutes");
 
         setTimeout(() => {
-            console.log("SUP: is next time point");
+            log("SUP: is next time point");
             if (isStreamPage) {
                 checkThisStreamCurrentlyPromo();
             } else {
@@ -53,21 +53,25 @@
     }
 
     function checkThisStreamCurrentlyPromo(): void {
-        console.log("SUP: check this stream is currently promo");
+        log("SUP: check this stream is currently promo");
         const promoPercentElement: HTMLElement = document.querySelector("#promo-percent") as HTMLElement;
         if (promoPercentElement && getComputedStyle(promoPercentElement).display !== "none") {
-            console.log("SUP: this stream is currently promo");
+            log("SUP: this stream is currently promo");
             startWaitingNextTimePoint();
         } else {
-            console.log("SUP: this stream is not promo now");
+            log("SUP: this stream is not promo now");
             redirectToIndex();
         }
     }
 
     function redirectToIndex(): void {
-        console.log("SUP:", "redirect to index and parse current promo link");
+        log("redirect to index and parse current promo link");
         sessionStorage.setItem("redirected", "true");
         window.location.href = "/";
+    }
+
+    function log(...data: any[]):void {
+        console.log(`SUM: [${new Date().toLocaleTimeString("ru-RU")}]`, ...data);
     }
 })();
 
