@@ -70,3 +70,6 @@
         window.location.href = "/";
     }
 })();
+
+
+//document.querySelector("#daily-info > a")
